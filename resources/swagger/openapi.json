@@ -1,0 +1,209 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API для заказов",
+    "description": "API для создания и управления заказами в системе",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost/api/v1",
+      "description": "Основной сервер API"
+    }
+  ],
+  "paths": {
+    "/orders": {
+      "post": {
+        "summary": "Создание нового заказа",
+        "description": "Gозволяет создать новый заказ с информацией о бронировании",
+        "operationId": "createOrder",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "event_id": {
+                    "type": "integer",
+                    "description": "Идентификатор события для заказа.",
+                    "example": 1
+                  },
+                  "event_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Дата события в формате 'YYYY-MM-DD'.",
+                    "example": "2024-12-15"
+                  },
+                  "ticket_adult_price": {
+                    "type": "integer",
+                    "description": "Цена одного билета для взрослого.",
+                    "example": 100
+                  },
+                  "ticket_adult_quantity": {
+                    "type": "integer",
+                    "description": "Количество билетов для взрослых.",
+                    "example": 2
+                  },
+                  "ticket_kid_price": {
+                    "type": "integer",
+                    "description": "Цена одного билета для ребенка.",
+                    "example": 50
+                  },
+                  "ticket_kid_quantity": {
+                    "type": "integer",
+                    "description": "Количество билетов для детей.",
+                    "example": 1
+                  }
+                },
+                "required": [
+                  "event_id",
+                  "event_date",
+                  "ticket_adult_price",
+                  "ticket_adult_quantity",
+                  "ticket_kid_price",
+                  "ticket_kid_quantity"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Заказ успешно создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Заказ успешно подтвержден"
+                    },
+                    "order": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "Идентификатор созданного заказа.",
+                          "example": 123
+                        },
+                        "event_id": {
+                          "type": "integer",
+                          "description": "Идентификатор события.",
+                          "example": 3
+                        },
+                        "event_date": {
+                          "type": "string",
+                          "format": "date",
+                          "description": "Дата и время события.",
+                          "example": "2021-08-21 13:00:00"
+                        },
+                        "barcode": {
+                          "type": "string",
+                          "description": "Сгенерированный штрих-код для заказа.",
+                          "example": "11111111"
+                        },
+                        "equal_price": {
+                          "type": "integer",
+                          "description": "Общая стоимость заказа.",
+                          "example": 250
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректные данные (ошибка валидации)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Неверный формат даты события"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ошибка бронирования после максимального количества попыток",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Не удалось забронировать заказ после 10 попыток"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Внутренняя ошибка сервера"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Order": {
+        "type": "object",
+        "properties": {
+          "event_id": {
+            "type": "integer"
+          },
+          "event_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "ticket_adult_price": {
+            "type": "integer"
+          },
+          "ticket_adult_quantity": {
+            "type": "integer"
+          },
+          "ticket_kid_price": {
+            "type": "integer"
+          },
+          "ticket_kid_quantity": {
+            "type": "integer"
+          },
+          "equal_price": {
+            "type": "integer"
+          },
+          "barcode": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}
